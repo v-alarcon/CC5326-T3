@@ -9,7 +9,8 @@ ENV PYTHONUNBUFFERED 1
 ENV PYTHONPATH=/app/src
 
 COPY . .
-
+RUN apk update
+RUN apk add postgresql-dev gcc python3-dev musl-dev
 RUN pip install -r requirements.txt
 
 
