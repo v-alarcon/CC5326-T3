@@ -37,10 +37,13 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 print('Conectado por', addr)
                 conn.sendall((str(config.Fisical_Layer)+str(config.ID_protocol)+str(config.Transport_Layer)).encode('utf-8'))
                 # if fisical layer is 1 it means we need to use wifi, else we use BLE
-                if config.Fisical_Layer == 1:
-                     if config.protocol == 0 and config.Transport_Layer == 0:
+                if config.Fisical_Layer == "1":
+                     if config.ID_protocol == "0" and config.Transport_Layer == "0":
                         # use the protocol 0 using tcp
                         print("\nPrepare to receive data from Protocol 0")
+                        s.listen()
+                        conn, addr = s.accept()
+                        print('Conectado por', addr)
                         data = conn.recv(1024)
                         print("Recibido los bytes")
                         # save data in the database
