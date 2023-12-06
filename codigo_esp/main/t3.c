@@ -383,6 +383,16 @@ void app_main(void)
                 nvs_close(my_handle);
                 esp_restart();
             }
+            if (rx_buffer[0]=='1' && rx_buffer[1]=='3' && rx_buffer[2]=='0'){
+                ESP_LOGI(TAG , "Configuración correcta\n");
+                err = nvs_set_i32(my_handle, "config", 2);
+                printf((err != ESP_OK) ? "Failed!\n" : "Done\n");
+                printf("Committing updates in NVS ... ");
+                err = nvs_commit(my_handle);
+                printf((err != ESP_OK) ? "Failed!\n" : "Done\n");
+                nvs_close(my_handle);
+                esp_restart();
+            }
         }
 
         if (config == 1){
@@ -428,6 +438,62 @@ void app_main(void)
             err = nvs_commit(my_handle);
             printf((err != ESP_OK) ? "Failed!\n" : "Done\n");
             nvs_close(my_handle);
+        }
+        if (config == 2){
+            printf("Do protocol 3");
+            
+            wifi_init_sta(WIFI_SSID, WIFI_PASSWORD);
+            ESP_LOGI(TAG,"Conectado a WiFi!\n");
+
+            struct sockaddr_in server_addr;
+            server_addr.sin_family = AF_INET;
+            server_addr.sin_port = htons(SERVER_PORT);
+            inet_pton(AF_INET, SERVER_IP, &server_addr.sin_addr.s_addr);
+
+            // Crear un socket
+            int sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+            if (sock < 0) {
+                ESP_LOGE(TAG, "Error al crear el socket");
+            }
+
+            // Conectar al servidor
+            if (connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) != 0) {
+                ESP_LOGE(TAG, "Error al conectar");
+                close(sock);
+            }
+            // create a list of 55 bytes to store the header and the data
+            char* msg = malloc(55);
+            //create header
+            char* head = header('3', '0');
+            // copy the header into the msg
+            memcpy(msg, head, 12);
+            // create the data for the battery level using random
+            uint8_t batteryLevel = getBatteryLevel();
+            // copy the battery level into the msg
+            msg[12] = batteryLevel;
+            // create the data for the timestamp
+            time_t ti;
+            time(&ti);
+            // copy the timestamp into the msg
+            memcpy(msg+13, &ti, 4);
+            // create the data for the temperature, humidity, pressure and CO level
+            char* thpc = get_thpc();
+            // copy the thpc into the msg
+            memcpy(msg+17, thpc, 10);
+            // create the data for the kpi
+            char* kpi = get_kpi();
+            // copy the kpi into the msg
+            memcpy(msg+27, kpi, 28);
+            // send the msg to the server
+            send(sock, msg, 55, 0);\
+
+            err = nvs_set_i32(my_handle, "config", 0);
+            printf((err != ESP_OK) ? "Failed!\n" : "Done\n");
+            printf("Committing updates in NVS ... ");
+            err = nvs_commit(my_handle);
+            printf((err != ESP_OK) ? "Failed!\n" : "Done\n");
+            nvs_close(my_handle);
+
         }
         
 

@@ -1,7 +1,7 @@
 {
     "version":            "1",
     "project_name":       "t3",
-    "project_version":    "7734b24-dirty",
+    "project_version":    "e8babd8-dirty",
     "project_path":       "C:/Users/vicente/Desktop/IoT/CC5326-T3/codigo_esp",
     "idf_path":           "C:/Users/vicente/esp/esp-idf",
     "build_dir":          "C:/Users/vicente/Desktop/IoT/CC5326-T3/codigo_esp/build",
