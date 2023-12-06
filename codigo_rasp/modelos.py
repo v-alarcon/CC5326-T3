@@ -53,9 +53,9 @@ class Logs(BaseModel):
 
 # create a new table named Config with Fisical layer, ID_protocol and Transport_Layer
 class Config(BaseModel):
-    Fisical_Layer = CharField()
-    ID_protocol = CharField()
-    Transport_Layer = CharField()
+    fisical = CharField()
+    idprotocol = CharField()
+    transportlayer = CharField()
 
 # create a new table named Loss with timestap and packet_loss
 class Loss(BaseModel):

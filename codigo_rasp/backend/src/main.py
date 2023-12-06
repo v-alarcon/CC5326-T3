@@ -1,4 +1,4 @@
-from peewee import PostgresqlDatabase
+from peewee import *
 from fastapi import FastAPI, Depends
 from pydantic import BaseModel
 from starlette.middleware.cors import CORSMiddleware
@@ -14,8 +14,6 @@ db = PostgresqlDatabase(
     host='192.168.4.1',  # Si usan docker compose, el host es el nombre del servicio, si no, es localhost
     port='5433'
 )
-
-
 def get_database():
     db.connect()
     try:
@@ -47,22 +45,27 @@ app.add_middleware(
 
 class SetSetting(BaseModel):
     # Esto de ocupa para definir que recive un endpoint
-    setting_id: int
-    value: float
+    fisical_layer: str
+    id_protocol: str
+    transport_layer: str
 
 
-@app.get("/ejemplo/")
+@app.get("/conf/")
 async def get_items(database: PostgresqlDatabase = Depends(get_database)):
     # Aqui pueden acceder a la base de datos y hacer las consultas que necesiten
-    return {"message": "Hello World"}
+    # ask to the db for the table Config using peewee by id without using the model
+    a=db.execute_sql("SELECT * FROM Config WHERE id = 1").fetchone()
+    print(a)
+
+    return {"values" : a}
 
 
-@app.post("/ejemplo/")
+@app.post("/conf/")
 async def create_item(setting: SetSetting, database: PostgresqlDatabase = Depends(get_database)):
     # aqui reciben un objeto de tipo Setting
     setting_dict = setting.dict()
     print(setting_dict)
     # Luego pueden usar la base de datos
-    tables = database.get_tables()  # esto es solo un ejemplo
-    print(tables)
-    return {"message": "Hello World"}
+    #update the config table with the new values
+    db.execute_sql("UPDATE Config SET fisical = %s, idprotocol = %s, transportlayer = %s WHERE id = 1", (setting_dict["fisical_layer"], setting_dict["id_protocol"], setting_dict["transport_layer"]))
+    return {"message": "db updated"}

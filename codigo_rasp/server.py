@@ -9,10 +9,10 @@ PORT = 1234       # Puerto en el que se escucha
 # Configuración de la base de datos
 db_config = {
     'host': 'localhost', 
-    'port': 5432, 
+    'port': 5433, 
     'user': 'postgres', 
     'password': 'postgres', 
-    'database': 'db'
+    'database': 'iot_db'
 }
 
 db = PostgresqlDatabase(**db_config)

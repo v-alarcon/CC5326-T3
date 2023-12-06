@@ -23,12 +23,12 @@ const MainView = () => {
   const [apiData, setApiData] = useState();
 
   const onClickGet = async () => {
-    const res = await api.get("/ejemplo/");
+    const res = await api.get("/conf/");
     setApiData(res.data);
   };
 
   const postToApi = async () => {
-    const res = await api.post("/ejemplo/", {
+    const res = await api.post("/conf/", {
       data: "data",
     });
     // ESTO ES UN EJEMPLO DE COMO HACER UN POST (no funciona por que los campos no son los correctos aqui)
