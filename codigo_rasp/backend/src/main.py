@@ -11,8 +11,8 @@ db = PostgresqlDatabase(
     'iot_db',
     user='postgres',
     password='postgres',
-    host='db',  # Si usan docker compose, el host es el nombre del servicio, si no, es localhost
-    port='5432'
+    host='192.168.4.1',  # Si usan docker compose, el host es el nombre del servicio, si no, es localhost
+    port='5433'
 )
 
 
